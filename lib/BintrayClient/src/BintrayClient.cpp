@@ -27,8 +27,9 @@ const String BintrayClient::m_api_host = "api.bintray.com";
 BintrayClient::BintrayClient(const String &user, const String &repository, const String &package)
     : m_user(user), m_repo(repository), m_package(package)
 {
-    m_certificates["akamai.bintray.com"] = BINTRAY_AKAMAI_ROOT_CA;
-    m_certificates["bintray.com"] = BINTRAY_API_ROOT_CA;
+    m_certificates.emplace_back("cloudfront.net", CLOUDFRONT_API_ROOT_CA);
+    m_certificates.emplace_back("akamai.bintray.com", BINTRAY_AKAMAI_ROOT_CA);
+    m_certificates.emplace_back("bintray.com", BINTRAY_API_ROOT_CA);
 }
 
 String BintrayClient::getUser() const
@@ -66,21 +67,23 @@ String BintrayClient::getBinaryRequestUrl(const String &version) const
     return String("https://") + getApiHost() + "/packages/" + getUser() + "/" + getRepository() + "/" + getPackage() + "/versions/" + version + "/files";
 }
 
-const char *BintrayClient::getCertificate(const String &host) const
+const char *BintrayClient::getCertificate(const String &url) const
 {
-    std::map<String, const char *>::const_iterator it = m_certificates.find(host);
-    if (it != m_certificates.end())
-    {
-        return (*it).second;
+    for(auto& cert: m_certificates) {
+        if(url.indexOf(cert.first) >= 0) {
+            return cert.second;
+        }
     }
-    return m_certificates.at(String("bintray.com"));
+
+    // Return the certificate for *.bintray.com by default
+    return m_certificates.rbegin()->second;
 }
 
-String BintrayClient::requestHTTPContent(const String &url, const char *cert) const
+String BintrayClient::requestHTTPContent(const String &url) const
 {
     String payload;
     HTTPClient http;
-    http.begin(url, cert);
+    http.begin(url, getCertificate(url));
     int httpCode = http.GET();
 
     if (httpCode > 0)
@@ -103,7 +106,7 @@ String BintrayClient::getLatestVersion() const
 {
     String version;
     const String url = getLatestVersionRequestUrl();
-    String jsonResult = requestHTTPContent(url, getCertificate(getApiHost()));
+    String jsonResult = requestHTTPContent(url);
     const size_t bufferSize = 1024;
     if (jsonResult.length() > bufferSize)
     {
@@ -126,7 +129,7 @@ String BintrayClient::getBinaryPath(const String &version) const
 {
     String path;
     const String url = getBinaryRequestUrl(version);
-    String jsonResult = requestHTTPContent(url, getCertificate(getApiHost()));
+    String jsonResult = requestHTTPContent(url);
 
     const size_t bufferSize = 1024;
     if (jsonResult.length() > bufferSize)

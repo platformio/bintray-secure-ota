@@ -17,7 +17,8 @@
 #ifndef BINTRAY_CLIENT_H
 #define BINTRAY_CLIENT_H
 
-#include <map>
+#include <vector>
+#include <utility>
 #include <WString.h>
 
 class BintrayClient {
@@ -31,8 +32,8 @@ public:
     String getApiHost() const;
     String getLatestVersionRequestUrl() const;
     String getBinaryRequestUrl(const String& version) const;
-    const char* getCertificate(const String& host) const;
-    String requestHTTPContent(const String& url, const char* cert) const;
+    const char* getCertificate(const String& url) const;
+    String requestHTTPContent(const String& url) const;
     String getLatestVersion() const;
     String getBinaryPath(const String& version) const;
 
@@ -42,7 +43,7 @@ private:
     String m_package;
     static const String m_storage_host;
     static const String m_api_host;
-    std::map<String, const char*> m_certificates;
+    std::vector<std::pair<String, const char*>> m_certificates;
 };
 
 #endif // BINTRAY_CLIENT_H
