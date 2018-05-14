@@ -21,11 +21,10 @@
 #include "BintrayClient.h"
 #include "BintrayCertificates.h"
 
-const String BintrayClient::m_storage_host = "dl.bintray.com";
-const String BintrayClient::m_api_host = "api.bintray.com";
-
 BintrayClient::BintrayClient(const String &user, const String &repository, const String &package)
-    : m_user(user), m_repo(repository), m_package(package)
+    : m_user(user), m_repo(repository), m_package(package),
+      m_storage_host("dl.bintray.com"),
+      m_api_host("api.bintray.com")
 {
     m_certificates.emplace_back("cloudfront.net", CLOUDFRONT_API_ROOT_CA);
     m_certificates.emplace_back("akamai.bintray.com", BINTRAY_AKAMAI_ROOT_CA);
