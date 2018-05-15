@@ -29,4 +29,15 @@ install:
     - platformio update
 
 script:
+    - echo "Check compiler errors"
     - platformio run
+
+    - echo "List remote devices"
+    - platformio remote device list
+
+    - echo "Run embedded test on a remote device"
+    - platformio remote test
+
+deploy:
+  provider: script
+  script: platformio run -e release -t upload
