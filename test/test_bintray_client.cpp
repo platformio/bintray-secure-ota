@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <unity.h>
 
-#include "BintrayClient.h"
-#include "WiFi.h"
+#include <BintrayClient.h>
+#include <WiFi.h>
 
 const BintrayClient bintray(BINTRAY_USER, BINTRAY_REPO, BINTRAY_PACKAGE);
 
