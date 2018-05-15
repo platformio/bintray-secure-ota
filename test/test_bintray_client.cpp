@@ -4,12 +4,10 @@
 #include "BintrayClient.h"
 #include "WiFi.h"
 
-#ifdef UNIT_TEST
-
 const BintrayClient bintray(BINTRAY_USER, BINTRAY_REPO, BINTRAY_PACKAGE);
 
 // void setUp(void) {
-    
+
 // }
 
 // void tearDown(void) {
@@ -19,16 +17,16 @@ const BintrayClient bintray(BINTRAY_USER, BINTRAY_REPO, BINTRAY_PACKAGE);
 void test_wifi_connection(void) {
     const int RESPONSE_TIMEOUT_MS = 5000;
     unsigned long timeout = millis();
-    
+
     WiFi.begin(WIFI_SSID, WIFI_PASS);
     while (WiFi.status() != WL_CONNECTED) {
         if (millis() - timeout > RESPONSE_TIMEOUT_MS) {
             TEST_FAIL_MESSAGE("WiFi connection timeout. Please check your settings!");
         }
-        
+
         delay(500);
     }
-    
+
     TEST_ASSERT_TRUE(WiFi.isConnected());
 }
 
@@ -53,6 +51,7 @@ void test_bintray_binary_path_is_valid(void) {
 
 
 void setup() {
+    delay(2000);
     UNITY_BEGIN();
     RUN_TEST(test_wifi_connection);
     RUN_TEST(test_bintray_client_credentials);
@@ -62,5 +61,3 @@ void setup() {
 }
 
 void loop() {}
-
-#endif

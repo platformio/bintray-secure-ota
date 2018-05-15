@@ -15,8 +15,6 @@
  limitations under the License.
 **/
 
-#ifndef UNIT_TEST
-
 #include <WiFiClientSecure.h>
 #include <Update.h>
 #include <BintrayClient.h>
@@ -226,5 +224,3 @@ void processOTAUpdate(const String &version)
     client.flush();
   }
 }
-
-#endif // UNIT_TEST

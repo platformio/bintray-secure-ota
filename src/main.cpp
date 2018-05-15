@@ -14,8 +14,6 @@
  limitations under the License.
 **/
 
-#ifndef UNIT_TEST
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include "SecureOTA.h"
@@ -44,5 +42,3 @@ void loop()
   checkFirmwareUpdates();
   delay(3000);
 }
-
-#endif // UNIT_TEST
