@@ -41,3 +41,5 @@ script:
 deploy:
   provider: script
   script: platformio run -e release -t upload
+#   on:
+#     branch: master

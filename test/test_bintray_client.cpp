@@ -53,8 +53,8 @@ void test_bintray_binary_path_is_valid(void) {
 void setup() {
     delay(2000);
     UNITY_BEGIN();
-    RUN_TEST(test_wifi_connection);
     RUN_TEST(test_bintray_client_credentials);
+    RUN_TEST(test_wifi_connection);
     RUN_TEST(test_bintray_latest_version_is_not_empty);
     RUN_TEST(test_bintray_binary_path_is_valid);
     UNITY_END();
