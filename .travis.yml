@@ -42,5 +42,5 @@ deploy:
     provider: script
     script: platformio run -e release -t upload
     all_branches: true
-#   on:
-#     branch: master
+  on:
+    branch: swampup
