@@ -20,7 +20,7 @@ Import('env')
 
 project_config = util.load_project_config()
 bintray_config = {k: v for k, v in project_config.items("bintray")}
-version = project_config.get("common", "version")
+version = project_config.get("common", "release_version")
 
 #
 # Push new firmware to the Bintray storage using API
