@@ -39,7 +39,8 @@ script:
     - platformio remote test -r
 
 deploy:
-  provider: script
-  script: platformio run -e release -t upload
+    provider: script
+    script: platformio run -e release -t upload
+    all_branches: true
 #   on:
 #     branch: master
