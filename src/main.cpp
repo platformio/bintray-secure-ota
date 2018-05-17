@@ -16,16 +16,24 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
+#include <ESP32WebServer.h>
+#include <ESPmDNS.h>
 #include "SecureOTA.h"
+
+ESP32WebServer server ( 80 );
+
+const uint16_t OTA_CHECK_INTERVAL = 3000; // ms
+uint32_t _lastOTACheck = 0;
 
 void setup()
 {
   Serial.begin(115200);
-  delay(10);
+  delay(100);
 
   Serial.print("Device version: v.");
   Serial.println(VERSION);
-  Serial.print("Connecting to " + String(WIFI_SSID));
+  Serial.print("Connecting to ");
+  Serial.println(WIFI_SSID);
 
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   while (WiFi.status() != WL_CONNECTED)
@@ -33,12 +41,28 @@ void setup()
     Serial.print(".");
     delay(500);
   }
-
   Serial.println(" connected!");
+
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  if (MDNS.begin("swampup-ota-thing")) {
+    delay(1000);
+    MDNS.addService("http", "tcp", 80);
+  }
+
+  server.on ( "/", []() {
+    server.send ( 200, "text/plain", "Welcome to JFrog swampUP!" );
+  } );
+  server.begin();
+  _lastOTACheck = millis();
 }
 
 void loop()
 {
-  checkFirmwareUpdates();
-  delay(3000);
+  server.handleClient();
+  if ((millis() - OTA_CHECK_INTERVAL) > _lastOTACheck) {
+    _lastOTACheck = millis();
+    checkFirmwareUpdates();
+  }
 }
