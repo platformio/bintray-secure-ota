@@ -52,7 +52,7 @@ void setup()
   }
 
   server.on ( "/", []() {
-    server.send ( 200, "text/plain", "Welcome to JFrog swampUP! :)" );
+    server.send ( 200, "text/plain", "Welcome to JFrog swampUP 2018! :)" );
   } );
   server.begin();
   _lastOTACheck = millis();
