@@ -20,10 +20,10 @@
 #include <ESPmDNS.h>
 #include "SecureOTA.h"
 
-ESP32WebServer server ( 80 );
-
 const uint16_t OTA_CHECK_INTERVAL = 3000; // ms
 uint32_t _lastOTACheck = 0;
+
+ESP32WebServer server ( 80 );
 
 void setup()
 {
@@ -51,18 +51,22 @@ void setup()
     MDNS.addService("http", "tcp", 80);
   }
 
+  _lastOTACheck = millis();
+  // your setup code goes here
+
   server.on ( "/", []() {
     server.send ( 200, "text/plain", "Welcome to JFrog swampUP 2018! :)" );
   } );
   server.begin();
-  _lastOTACheck = millis();
 }
 
 void loop()
 {
-  server.handleClient();
   if ((millis() - OTA_CHECK_INTERVAL) > _lastOTACheck) {
     _lastOTACheck = millis();
     checkFirmwareUpdates();
   }
+
+  // your loop code goes here
+  server.handleClient();
 }
