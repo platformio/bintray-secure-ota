@@ -21,6 +21,10 @@
 const uint16_t OTA_CHECK_INTERVAL = 3000; // ms
 uint32_t _lastOTACheck = 0;
 
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN 5
+#endif
+
 void setup()
 {
   Serial.begin(115200);
@@ -40,6 +44,8 @@ void setup()
   Serial.println(" connected!");
   _lastOTACheck = millis();
 
+  pinMode(LED_BUILTIN, OUTPUT);
+  
   // your setup code goes here
 }
 
@@ -48,6 +54,12 @@ void loop()
   if ((millis() - OTA_CHECK_INTERVAL) > _lastOTACheck) {
     _lastOTACheck = millis();
     checkFirmwareUpdates();
+    for (uint16_t i = 0; i < VERSION; i++) {
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(200);
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(200);
+    }    
   }
 
   // your loop code goes here
