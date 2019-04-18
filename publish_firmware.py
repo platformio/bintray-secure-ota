@@ -48,23 +48,21 @@ def publish_firmware(source, target, env):
         "X-Bintray-Override": "1"
     }
 
+    r = None
     try:
-        r = requests.put(
-            url,
-            data=open(firmware_path, "rb"),
-            headers=headers,
-            auth=(bintray_config.get("user"), bintray_config['api_token']))
+        r = requests.put(url,
+                         data=open(firmware_path, "rb"),
+                         headers=headers,
+                         auth=(bintray_config.get("user"),
+                               bintray_config['api_token']))
         r.raise_for_status()
     except requests.exceptions.RequestException:
         sys.stderr.write("Failed to submit package: {0}\n{1}\n".format(
             r.status_code, r.text))
-        env.Exit(1)        
+        env.Exit(1)
 
     print("The firmware has been successfuly published at Bintray.com!")
 
 
 # Custom upload command and program name
-env.Replace(
-    PROGNAME="firmware_v_%s" % version,
-    UPLOADCMD=publish_firmware
-)
+env.Replace(PROGNAME="firmware_v_%s" % version, UPLOADCMD=publish_firmware)
