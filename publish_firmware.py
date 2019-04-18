@@ -56,9 +56,9 @@ def publish_firmware(source, target, env):
                          auth=(bintray_config.get("user"),
                                bintray_config['api_token']))
         r.raise_for_status()
-    except requests.exceptions.RequestException:
-        sys.stderr.write("Failed to submit package: {0}\n{1}\n".format(
-            r.status_code, r.text))
+    except requests.exceptions.RequestException as e:
+        sys.stderr.write("Failed to submit package: %s\n" %
+                         ("%s\n%s" % (r.status_code, r.text) if r else str(e)))
         env.Exit(1)
 
     print("The firmware has been successfuly published at Bintray.com!")
