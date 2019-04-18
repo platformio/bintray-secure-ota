@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import requests
+import sys
 from os.path import basename
 from platformio import util
 
@@ -47,18 +48,19 @@ def publish_firmware(source, target, env):
         "X-Bintray-Override": "1"
     }
 
-    r = requests.put(
-        url,
-        data=open(firmware_path, "rb"),
-        headers=headers,
-        auth=(bintray_config.get("user"), bintray_config['api_token']))
-
-    if r.status_code != 201:
+    try:
+        r = requests.put(
+            url,
+            data=open(firmware_path, "rb"),
+            headers=headers,
+            auth=(bintray_config.get("user"), bintray_config['api_token']))
+        r.raise_for_status()
+    except requests.exceptions.RequestException:
         sys.stderr.write("Failed to submit package: {0}\n{1}\n".format(
             r.status_code, r.text))
-        env.Exit(1)
-    else:
-        print("The firmware has been successfuly published at Bintray.com!")
+        env.Exit(1)        
+
+    print("The firmware has been successfuly published at Bintray.com!")
 
 
 # Custom upload command and program name
