@@ -23,7 +23,9 @@ uint32_t _lastOTACheck = 0;
 
 void setup()
 {
-  Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  Serial.begin(921600);
   delay(10);
 
   Serial.print("Device version: v.");
@@ -50,5 +52,10 @@ void loop()
     checkFirmwareUpdates();
   }
 
+
   // your loop code goes here
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(250);                       // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  delay(250);  
 }
