@@ -15,13 +15,22 @@
 import requests
 import sys
 from os.path import basename
-from platformio import util
 
 Import('env')
 
-project_config = util.load_project_config()
-bintray_config = {k: v for k, v in project_config.items("bintray")}
+# from platformio import util
+# project_config = util.load_project_config()
+# bintray_config = {k: v for k, v in project_config.items("bintray")}
+# version = project_config.get("common", "release_version")
+
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
+project_config = configparser.ConfigParser()
+project_config.read("platformio.ini")
 version = project_config.get("common", "release_version")
+bintray_config = {k: v for k, v in project_config.items("bintray")}
 
 #
 # Push new firmware to the Bintray storage using API
