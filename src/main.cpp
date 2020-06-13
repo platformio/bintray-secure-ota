@@ -25,7 +25,7 @@ void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
 
-  Serial.begin(921600);
+  Serial.begin(SERIAL_SPEED);
   delay(10);
 
   Serial.print("Device version: v.");
@@ -55,7 +55,7 @@ void loop()
 
   // your loop code goes here
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(250);                       // wait for a second
+  delay(1000);                       // wait for a second
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(250);  
+  delay(1000);  
 }
