@@ -17,6 +17,9 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include "SecureOTA.h"
+// uncomment for more debug output
+#define DEBUG
+
 
 const uint16_t OTA_CHECK_INTERVAL = 3000; // ms
 uint32_t _lastOTACheck = 0;

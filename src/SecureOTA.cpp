@@ -20,6 +20,12 @@
 #include <BintrayClient.h>
 #include "SecureOTA.h"
 
+#ifdef DEBUG
+ #define DEBUG_PRINT(x)  Serial.println (x)
+#else
+ #define DEBUG_PRINT(x)
+#endif
+
 const BintrayClient bintray(BINTRAY_USER, BINTRAY_REPO, BINTRAY_PACKAGE);
 
 // Connection port (HTTPS)
@@ -43,7 +49,7 @@ void checkFirmwareUpdates()
   }
   else if (atoi(latest.c_str()) <= VERSION)
   {
-    //Serial.println("The current firmware is up to date. Continue ...");
+    DEBUG_PRINT("The current firmware is up to date. Continue ...");
     return;
   }
 
@@ -95,7 +101,7 @@ void processOTAUpdate(const String &version)
       }
     }
 
-    //Serial.println("Requesting: " + firmwarePath);
+    DEBUG_PRINT("Requesting: " + firmwarePath);
 
     client.print(String("GET ") + firmwarePath + " HTTP/1.1\r\n");
     client.print(String("Host: ") + currentHost + "\r\n");
@@ -129,17 +135,17 @@ void processOTAUpdate(const String &version)
       {
         if (line.indexOf("200") > 0)
         {
-          //Serial.println("Got 200 status code from server. Proceeding to firmware flashing");
+          DEBUG_PRINT("Got 200 status code from server. Proceeding to firmware flashing");
           redirect = false;
         }
         else if (line.indexOf("302") > 0)
         {
-          //Serial.println("Got 302 status code from server. Redirecting to the new address");
+          DEBUG_PRINT("Got 302 status code from server. Redirecting to the new address");
           redirect = true;
         }
         else
         {
-          //Serial.println("Could not get a valid firmware url");
+          DEBUG_PRINT("Could not get a valid firmware url");
           //Unexptected HTTP response. Retry or skip update?
           redirect = false;
         }
@@ -149,12 +155,12 @@ void processOTAUpdate(const String &version)
       if (line.startsWith("Location: "))
       {
         String newUrl = getHeaderValue(line, "Location: ");
-        //Serial.println("Got new url: " + newUrl);
+        Serial.println("Got new url: " + newUrl);
         newUrl.remove(0, newUrl.indexOf("//") + 2);
         currentHost = newUrl.substring(0, newUrl.indexOf('/'));
         newUrl.remove(newUrl.indexOf(currentHost), currentHost.length());
         firmwarePath = newUrl;
-        //Serial.println("firmwarePath: " + firmwarePath);
+        Serial.println("firmwarePath: " + firmwarePath);
         continue;
       }
 
@@ -162,13 +168,13 @@ void processOTAUpdate(const String &version)
       if (line.startsWith("Content-Length: "))
       {
         contentLength = atoi((getHeaderValue(line, "Content-Length: ")).c_str());
-        Serial.println("Got " + String(contentLength) + " bytes from server");
+        DEBUG_PRINT("Got " + String(contentLength) + " bytes from server");
       }
 
       if (line.startsWith("Content-Type: "))
       {
         String contentType = getHeaderValue(line, "Content-Type: ");
-        //Serial.println("Got " + contentType + " payload.");
+        Serial.println("Got " + contentType + " payload.");
         if (contentType == "application/octet-stream")
         {
           isValidContentType = true;

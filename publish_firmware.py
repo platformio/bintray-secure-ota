@@ -14,23 +14,26 @@
 
 import requests
 import sys
+import os
 from os.path import basename
 
-Import('env')
+Import("env")
 
-# from platformio import util
-# project_config = util.load_project_config()
-# bintray_config = {k: v for k, v in project_config.items("bintray")}
-# version = project_config.get("common", "release_version")
+# get api token, as the "old way" does not seem to work with sysenv for windows 
+my_flags = env.ParseFlags(env['BUILD_FLAGS'])
+defines = {k: v for (k, v) in my_flags.get("CPPDEFINES")}
+apiToken = defines.get("BINTRAY_TOKEN") # this works
 
 try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
+
 project_config = configparser.ConfigParser()
 project_config.read("platformio.ini")
 version = project_config.get("common", "release_version")
 bintray_config = {k: v for k, v in project_config.items("bintray")}
+
 
 #
 # Push new firmware to the Bintray storage using API
@@ -63,7 +66,7 @@ def publish_firmware(source, target, env):
                          data=open(firmware_path, "rb"),
                          headers=headers,
                          auth=(bintray_config.get("user"),
-                               bintray_config['api_token']))
+                               apiToken))
         r.raise_for_status()
     except requests.exceptions.RequestException as e:
         sys.stderr.write("Failed to submit package: %s\n" %

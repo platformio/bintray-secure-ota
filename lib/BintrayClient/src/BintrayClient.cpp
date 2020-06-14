@@ -112,12 +112,17 @@ String BintrayClient::getLatestVersion() const
         Serial.println("Error: Could parse JSON. Input data is too big!");
         return version;
     }
+    else if (jsonResult.length() == 0)
+    {
+        Serial.println("Warning: Could not find any version info. Have you uploaded a firmware yet?");
+        return version; // return empty version to show we have no info
+    }
     StaticJsonBuffer<bufferSize> jsonBuffer;
 
     JsonObject &root = jsonBuffer.parseObject(jsonResult.c_str());
     // Check for errors in parsing
     if (!root.success())
-    {
+    {   
         Serial.println("Error: Could not parse JSON!");
         return version;
     }

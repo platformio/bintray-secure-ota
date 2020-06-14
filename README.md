@@ -17,6 +17,7 @@ Before we start, just follow the instructions below so you can later work alongs
 * Bintray Setup
   * Create account at bintray.com
     * We will need the username later, mine is *r0oland*
+  * Checkout this website regarding the overall structure of Bintray, i.e. repositories vs. packages www.jfrog.com/confluence/display/BT/Key+Concepts
   * Click **Add New Repository**
     * **Name**: Ours will be called *OTA_Github_Example_Repository*, we will need this name later in our platformio.ini file as well
     * **Type**: Generic
@@ -64,4 +65,21 @@ You will have to adjust the following settings to match your Bintray account:
 
 You might also have to adjust some or all of the following, depending on your setup and operating system
 
+Once all those changes have been made, compile and upload the firmware to your uC using Platformio in the "old" way, i.e. click **Upload** in the PlatformIO GUI. Once the upload was successful, you should see the following output on the Serial port:
+```
+Device version: v.0
+Connecting to {your wifi ssid here}...connected!
+Error: Could not parse JSON!
+Could not load info about the latest firmware, so nothing to update. Continue ...
+```
+
+Now
+Change to release
+Change firmware version
+
+There is a new version of firmware available: v.1
+
+
+
 [![Build Status](https://travis-ci.org/platformio/bintray-secure-ota.svg?branch=master)](https://travis-ci.org/platformio/bintray-secure-ota)
+
