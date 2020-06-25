@@ -16,12 +16,10 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
+#include <BintrayClient.h>
 #include "SecureOTA.h"
-// uncomment for more debug output
-#define DEBUG
 
-
-const uint16_t OTA_CHECK_INTERVAL = 3000; // ms
+const uint16_t OTA_CHECK_INTERVAL = 5000; // ms
 uint32_t _lastOTACheck = 0;
 
 void setup()
@@ -31,6 +29,8 @@ void setup()
   Serial.begin(SERIAL_SPEED);
   delay(10);
 
+  Serial.println();
+  Serial.println();
   Serial.print("Device version: v.");
   Serial.println(VERSION);
   Serial.print("Connecting to " + String(WIFI_SSID));
@@ -52,9 +52,8 @@ void loop()
 {
   if ((millis() - OTA_CHECK_INTERVAL) > _lastOTACheck) {
     _lastOTACheck = millis();
-    checkFirmwareUpdates();
+    checkFirmwareUpdates(); // takes ~1s, make sure this is not a problem in your code
   }
-
 
   // your loop code goes here
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
