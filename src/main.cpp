@@ -18,6 +18,9 @@
 #include <WiFi.h>
 #include "SecureOTA.h"
 
+const uint16_t OTA_CHECK_INTERVAL = 3000; // ms
+uint32_t _lastOTACheck = 0;
+
 void setup()
 {
   Serial.begin(115200);
@@ -35,10 +38,17 @@ void setup()
   }
 
   Serial.println(" connected!");
+  _lastOTACheck = millis();
+
+  // your setup code goes here
 }
 
 void loop()
 {
-  checkFirmwareUpdates();
-  delay(3000);
+  if ((millis() - OTA_CHECK_INTERVAL) > _lastOTACheck) {
+    _lastOTACheck = millis();
+    checkFirmwareUpdates();
+  }
+
+  // your loop code goes here
 }
