@@ -112,16 +112,16 @@ String BintrayClient::getLatestVersion() const
         Serial.println("Error: Could parse JSON. Input data is too big!");
         return version;
     }
-    StaticJsonBuffer<bufferSize> jsonBuffer;
+    StaticJsonDocument<bufferSize> doc;
 
-    JsonObject &root = jsonBuffer.parseObject(jsonResult.c_str());
+    DeserializationError err = deserializeJson(doc, jsonResult.c_str());
     // Check for errors in parsing
-    if (!root.success())
+    if (err)
     {
         Serial.println("Error: Could not parse JSON!");
         return version;
     }
-    return root.get<String>("name");
+    return doc["name"].as<String>();
 }
 
 String BintrayClient::getBinaryPath(const String &version) const
@@ -136,14 +136,14 @@ String BintrayClient::getBinaryPath(const String &version) const
         Serial.println("Error: Could parse JSON. Input data is too big!");
         return path;
     }
-    StaticJsonBuffer<bufferSize> jsonBuffer;
+    StaticJsonDocument<bufferSize> doc;
 
-    JsonArray &root = jsonBuffer.parseArray(jsonResult.c_str());
-    JsonObject &firstItem = root[0];
-    if (!root.success())
+    DeserializationError err = deserializeJson(doc, jsonResult.c_str());
+    JsonObject firstItem = doc[0];
+    if (err)
     { //Check for errors in parsing
         Serial.println("Error: Could not parse JSON!");
         return path;
     }
-    return "/" + getUser() + "/" + getRepository() + "/" + firstItem.get<String>("path");
+    return "/" + getUser() + "/" + getRepository() + "/" + firstItem["path"].as<String>();
 }
